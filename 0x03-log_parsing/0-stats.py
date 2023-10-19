@@ -4,46 +4,34 @@
 
 import sys
 
-# Initialize variables
-total_file_size = 0
-status_code_counts = {}
+cache = {'200': 0, '301': 0, '400': 0, '401': 0,
+         '403': 0, '404': 0, '405': 0, '500': 0}
+total_size = 0
+counter = 0
 
-line_count = 0
 try:
-    # Read input line by line from stdin
     for line in sys.stdin:
-        line_count += 1
-        
-        # Parse the input line
-        parts = line.split()
-        if len(parts) >= 7:
-            ip_address = parts[0]
-            status_code = parts[-3]
-            file_size = int(parts[-2])
-            
-            # Update total file size
-            total_file_size += file_size
-            
-            # Update status code counts
-            if status_code.isdigit():
-                status_code = int(status_code)
-                if status_code in status_code_counts:
-                    status_code_counts[status_code] += 1
-                else:
-                    status_code_counts[status_code] = 1
-        
-        # Print statistics every 10 lines
-        if line_count % 10 == 0:
-            print("Total file size:", total_file_size)
-            for status_code in sorted(status_code_counts.keys()):
-                count = status_code_counts[status_code]
-                print(f"{status_code}: {count}")
-            print()
-except KeyboardInterrupt:
+        line_list = line.split(" ")
+        if len(line_list) > 4:
+            code = line_list[-2]
+            size = int(line_list[-1])
+            if code in cache.keys():
+                cache[code] += 1
+            total_size += size
+            counter += 1
+
+        if counter == 10:
+            counter = 0
+            print('File size: {}'.format(total_size))
+            for key, value in sorted(cache.items()):
+                if value != 0:
+                    print('{}: {}'.format(key, value))
+
+except Exception as err:
     pass
 
-# Print final statistics
-print("Total file size:", total_file_size)
-for status_code in sorted(status_code_counts.keys()):
-    count = status_code_counts[status_code]
-    print(f"{status_code}: {count}")
+finally:
+    print('File size: {}'.format(total_size))
+    for key, value in sorted(cache.items()):
+        if value != 0:
+            print('{}: {}'.format(key, value))
