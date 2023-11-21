@@ -1,37 +1,29 @@
 #!/usr/bin/python3
-"""Change making module.
-"""
+'''Given a pile of coins of different values,
+    determine the fewest number of coins needed to meet
+    a given amount total.
+'''
+import sys
 
-from typing import List
 
-def makeChange(coins: List[int], total: int) -> int:
-    """Determines the fewest number of coins needed to meet a given
-    amount total when given a pile of coins of different values.
-
-    Args:
-    coins (List[int]): A list of coin denominations.
-    total (int): The total amount for which change needs to be made.
-
-    Returns:
-    int: The fewest number of coins needed to meet the total amount.
-    """
+def makeChange(coins, total):
+    '''
+    Return: fewest number of coins needed to meet total
+    If total is 0 or less, return 0
+    If total cannot be met by any number of coins you have, return -1
+    '''
     if total <= 0:
         return 0
+    table = [sys.maxsize for i in range(total + 1)]
+    table[0] = 0
+    m = len(coins)
+    for i in range(1, total + 1):
+        for j in range(m):
+            if coins[j] <= i:
+                subres = table[i - coins[j]]
+                if subres != sys.maxsize and subres + 1 < table[i]:
+                    table[i] = subres + 1
 
-    remaining_amount = total
-    coins_count = 0
-    coin_index = 0
-    sorted_coins = sorted(coins, reverse=True)
-    num_coins = len(coins)
-
-    while remaining_amount > 0:
-        if coin_index >= num_coins:
-            return -1
-        if remaining_amount - sorted_coins[coin_index] >= 0:
-            remaining_amount -= sorted_coins[coin_index]
-            coins_count += 1
-        else:
-            coin_index += 1
-
-    return coins_count
-
+    if table[total] == sys.maxsize:
+        return -1
+    return table[total]
