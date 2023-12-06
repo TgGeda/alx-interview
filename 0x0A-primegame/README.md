@@ -31,7 +31,7 @@
     Result: Ben has the most wins
 
 ## Example
-    carrie@ubuntu:~/0x0A-primegame$ cat main_0.py
+    E:\all_file\Alx Software Project\alx-interview\0x0A-primegame>python.exe 0-main.py
     #!/usr/bin/python3
 
     isWinner = __import__('0-prime_game').isWinner
